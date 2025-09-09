@@ -8,4 +8,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: APT=1 ./build.sh
+      run: APT=1 ./ci.sh

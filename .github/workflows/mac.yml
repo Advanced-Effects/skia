@@ -8,4 +8,4 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
-      run: OSX=1 ARCH=arm64 ./build.sh
+      run: OSX=1 ./ci.sh
