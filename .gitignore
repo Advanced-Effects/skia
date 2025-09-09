@@ -22,6 +22,7 @@ infra/bots/tools/luci-go/mac64/isolate
 infra/bots/tools/luci-go/win64/cipd.exe
 infra/bots/tools/luci-go/win64/isolate.exe
 out
+build
 platform_tools/android/apps/build
 platform_tools/android/apps/*.properties
 platform_tools/android/apps/*/build
