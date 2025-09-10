@@ -232,6 +232,9 @@ if (skia_use_system_zlib) {
         "-Wno-incompatible-pointer-types",
         "-Wunused-variable",
       ]
+      if(!is_win) {
+        cflags += ["-fPIC"]
+      }
     }
   }
 

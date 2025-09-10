@@ -21,7 +21,6 @@ project(skia VERSION 20250909 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-set(ABI 1)
 
 if(NOT APPLE)
     if(UNIX AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
@@ -36,13 +35,13 @@ include(ProcessorCount)
 
 ProcessorCount(N)
 
-option(SKIA_USE_SYSTEM_LIBS "Use system libraries on Linux" ON)
-option(LINUX_DEPLOY "Linux Deploy" OFF)
-option(MAC_DEPLOY "Mac Deploy" OFF)
-option(SYNC_SKIA_DEPS "Sync third-party depends" OFF)
+option(SKIA_USE_SYSTEM_LIBS "Use system libraries for skia" ON)
+option(LINUX_DEPLOY "Linux Deploy (only for Friction SDK)" OFF)
+option(MAC_DEPLOY "Mac Deploy (only for Friction SDK)" OFF)
+option(SKIA_SYNC_EXTERNAL "Sync skia external software" OFF)
 
 if(UNIX AND NOT APPLE)
-    option(USE_EGL "Use EGL" ON)
+    option(SKIA_USE_EGL "Use EGL in skia" ON)
 endif()
 
 set(SKIA_SRC "${CMAKE_CURRENT_SOURCE_DIR}")
@@ -71,7 +70,7 @@ endif()
 if(WIN32)
     set(SKIA_ARGS_EXTRA --ide=vs)
     set(SKIA_BUILD_CMD msbuild all.sln)
-    if(${SYNC_SKIA_DEPS})
+    if(${SKIA_SYNC_EXTERNAL})
         set(SKIA_UPDATE_CMD ${PYTHON_EXECUTABLE} "tools\\git-sync-deps")
     else()
         set(SKIA_UPDATE_CMD :)
@@ -84,7 +83,7 @@ else()
     if(${SKIA_USE_SYSTEM_LIBS})
         set(SKIA_UPDATE_CMD true)
     else()
-        if(${SYNC_SKIA_DEPS})
+        if(${SKIA_SYNC_EXTERNAL})
             set(SKIA_UPDATE_CMD ${PYTHON_EXECUTABLE} "tools/git-sync-deps")
         else()
             set(SKIA_UPDATE_CMD true)
@@ -92,7 +91,7 @@ else()
     endif()
     set(SKIA_ARGS "ar=\"${CMAKE_AR}\" cc=\"${CMAKE_C_COMPILER}\" cxx=\"${CMAKE_CXX_COMPILER}\"")
     if(UNIX AND NOT APPLE)
-        if(${USE_EGL})
+        if(${SKIA_USE_EGL})
             set(SKIA_ARGS "${SKIA_ARGS} skia_use_egl=true")
         endif()
         set(SKIA_ARGS "${SKIA_ARGS} is_component_build=true")
@@ -174,7 +173,7 @@ if(UNIX AND NOT APPLE)
     include(GNUInstallDirs)
     install(
         FILES
-        ${SKIA_BUILD_DIR}/libskia-friction${ABI}.so
+        ${SKIA_BUILD_DIR}/libskia-friction.so
         DESTINATION
         ${CMAKE_INSTALL_LIBDIR}
     )
