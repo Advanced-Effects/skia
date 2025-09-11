@@ -4,7 +4,9 @@ Skia fork for use with Friction.
 
 Skia is a complete 2D graphic library for drawing Text, Geometries, and Images.
 
-## Linux
+## Linux/macOS
+
+Note that Friction includes skia and will build it for you.
 
 ### Requirements
 
@@ -13,6 +15,7 @@ Skia is a complete 2D graphic library for drawing Text, Geometries, and Images.
 * cmake
 * clang
 * expat
+* harfbuzz
 * freetype
 * fontconfig
 * libjpeg-turbo
@@ -20,6 +23,14 @@ Skia is a complete 2D graphic library for drawing Text, Geometries, and Images.
 * libwebp
 * libicu
 * zlib
+
+
+### Options
+
+* `-DSKIA_USE_SYSTEM_LIBS=OFF`
+* `-DSKIA_SYNC_EXTERNAL=ON` *(not needed if using source tarball)*
+
+Will build all dependencies instead of using system libraries.
 
 ### Build and install
 
@@ -36,4 +47,21 @@ cmake --build .
 cmake --install .
 ```
 
-This will install `libskia-friction1.so` to defined install path. Add optional `--prefix=/some/path` to install to a different location.
+This will install `libskia-friction.so` to defined install path. Add optional `--prefix=/some/path` to install to a different location.
+
+**Note:** Install option only available on Linux.
+
+## Windows
+
+### Requirements
+
+* CMake, Python and Ninja in PATH
+* LLVM (Installed to Program Files, v15 recommended)
+* Visual Studio (Build Tools) 2017
+
+```
+cmake -A x64 -DSKIA_USE_SYSTEM_LIBS=OFF -DSKIA_SYNC_EXTERNAL=ON ..
+cmake --build .
+```
+
+* `SKIA_SYNC_EXTERNAL=ON` requires git in PATH, not needed if using source tarball
