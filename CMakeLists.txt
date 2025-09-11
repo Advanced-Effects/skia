@@ -17,7 +17,7 @@
 #
 
 cmake_minimum_required(VERSION 3.12)
-project(skia VERSION 20250909 LANGUAGES CXX)
+project(skialib VERSION 20250909 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -170,7 +170,7 @@ else()
 endif()
 
 ExternalProject_Add(
-    skia
+    skialib
     SOURCE_DIR ${SKIA_SRC}
     BINARY_DIR ${SKIA_BUILD_DIR}
     DOWNLOAD_COMMAND :
@@ -184,7 +184,7 @@ ExternalProject_Add(
     USES_TERMINAL_BUILD true
 )
 
-add_dependencies(skia gn)
+add_dependencies(skialib gn)
 
 if(NOT ${SKIA_STATIC})
     if(UNIX AND NOT APPLE)
@@ -206,5 +206,5 @@ if(NOT ${SKIA_STATIC})
 endif()
 
 if(WIN32)
-    add_custom_command(TARGET skia POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SKIA_BUILD_DIR}/skia.dll.lib ${SKIA_BUILD_DIR}/skia.lib)
+    add_custom_command(TARGET skialib POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SKIA_BUILD_DIR}/skia.dll.lib ${SKIA_BUILD_DIR}/skia.lib)
 endif()
