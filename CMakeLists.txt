@@ -36,7 +36,7 @@ if(NOT APPLE)
 endif()
 
 if(WIN32)
-    find_program(PYTHON_EXECUTABLE NAMES python3.exe python.exe)
+    find_program(PYTHON_EXECUTABLE python.exe)
 else()
     find_program(PYTHON_EXECUTABLE NAMES python3 python)
 endif()
