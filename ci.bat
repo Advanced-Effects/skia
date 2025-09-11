@@ -2,6 +2,8 @@
 
 set CWD=%cd%
 
+git submodule update --init
+
 if exist "build\" (
     @RD /S /Q build
 )
