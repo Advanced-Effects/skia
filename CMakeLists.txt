@@ -54,7 +54,7 @@ if(NOT NINJA_EXECUTABLE)
     message(FATAL_ERROR "Ninja executable not found.")
 endif()
 
-
+option(SKIA_STATIC "Build static skia library for supported configurations" OFF)
 option(SKIA_USE_SYSTEM_LIBS "Use system libraries for skia" ON)
 option(SKIA_SYNC_EXTERNAL "Sync skia external software" OFF)
 
@@ -105,7 +105,11 @@ else()
         if(${SKIA_USE_EGL})
             set(SKIA_ARGS "${SKIA_ARGS} skia_use_egl=true")
         endif()
-        set(SKIA_ARGS "${SKIA_ARGS} is_component_build=true")
+        if(${SKIA_STATIC})
+            set(SKIA_ARGS "${SKIA_ARGS} is_component_build=false")
+        else()
+            set(SKIA_ARGS "${SKIA_ARGS} is_component_build=true")
+        endif()
         if (${LINUX_DEPLOY})
             set(SKIA_ARGS "${SKIA_ARGS} extra_cflags=[\"-Wno-error\"]")
         else()
@@ -182,21 +186,23 @@ ExternalProject_Add(
 
 add_dependencies(skia gn)
 
-if(UNIX AND NOT APPLE)
-    include(GNUInstallDirs)
-    install(
-        FILES
-        ${SKIA_BUILD_DIR}/libskia-friction.so
-        DESTINATION
-        ${CMAKE_INSTALL_LIBDIR}
-    )
-    install(
-        FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
-        ${CMAKE_CURRENT_SOURCE_DIR}/README.md
-        DESTINATION
-        ${CMAKE_INSTALL_DOCDIR}-friction-${PROJECT_VERSION}
-    )
+if(NOT ${SKIA_STATIC})
+    if(UNIX AND NOT APPLE)
+        include(GNUInstallDirs)
+        install(
+            FILES
+            ${SKIA_BUILD_DIR}/libskia-friction.so
+            DESTINATION
+            ${CMAKE_INSTALL_LIBDIR}
+        )
+        install(
+            FILES
+            ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
+            ${CMAKE_CURRENT_SOURCE_DIR}/README.md
+            DESTINATION
+            ${CMAKE_INSTALL_DOCDIR}-friction-${PROJECT_VERSION}
+        )
+    endif()
 endif()
 
 if(WIN32)

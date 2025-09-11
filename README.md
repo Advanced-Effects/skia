@@ -59,6 +59,8 @@ This will install `libskia-friction.so` to defined install path. Add optional `-
 * LLVM (Installed to Program Files, v15 recommended)
 * Visual Studio (Build Tools) 2017
 
+### Build
+
 ```
 cmake -A x64 -DSKIA_USE_SYSTEM_LIBS=OFF -DSKIA_SYNC_EXTERNAL=ON ..
 cmake --build .
