@@ -22,6 +22,11 @@ project(skia VERSION 20250909 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+include(ExternalProject)
+include(ProcessorCount)
+
+ProcessorCount(N)
+
 if(NOT APPLE)
     if(UNIX AND NOT CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
         message(FATAL_ERROR "Only Clang is supported.")
@@ -30,15 +35,31 @@ if(NOT APPLE)
     endif()
 endif()
 
-include(ExternalProject)
-include(ProcessorCount)
+if(WIN32)
+    find_program(PYTHON_EXECUTABLE NAMES python3.exe python.exe)
+else()
+    find_program(PYTHON_EXECUTABLE NAMES python3 python)
+endif()
 
-ProcessorCount(N)
+if(WIN32)
+    find_program(NINJA_EXECUTABLE ninja.exe)
+else()
+    find_program(NINJA_EXECUTABLE NAMES ninja-build ninja)
+endif()
+
+if(NOT PYTHON_EXECUTABLE)
+    message(FATAL_ERROR "Python executable not found.")
+endif()
+if(NOT NINJA_EXECUTABLE)
+    message(FATAL_ERROR "Ninja executable not found.")
+endif()
+
 
 option(SKIA_USE_SYSTEM_LIBS "Use system libraries for skia" ON)
+option(SKIA_SYNC_EXTERNAL "Sync skia external software" OFF)
+
 option(LINUX_DEPLOY "Linux Deploy (only for Friction SDK)" OFF)
 option(MAC_DEPLOY "Mac Deploy (only for Friction SDK)" OFF)
-option(SKIA_SYNC_EXTERNAL "Sync skia external software" OFF)
 
 if(UNIX AND NOT APPLE)
     option(SKIA_USE_EGL "Use EGL in skia" ON)
@@ -55,16 +76,6 @@ if(${SKIA_USE_SYSTEM_LIBS} AND UNIX)
     set(SKIA_ENABLE_EXTERNAL "true")
 else()
     set(SKIA_ENABLE_EXTERNAL "false")
-endif()
-
-find_program(PYTHON_EXECUTABLE python3 python)
-if(NOT PYTHON_EXECUTABLE)
-    message(FATAL_ERROR "Python executable not found.")
-endif()
-
-find_program(NINJA_EXECUTABLE NAMES ninja-build ninja)
-if(NOT NINJA_EXECUTABLE)
-    message(FATAL_ERROR "Ninja executable not found.")
 endif()
 
 if(WIN32)
@@ -169,6 +180,8 @@ ExternalProject_Add(
     USES_TERMINAL_BUILD true
 )
 
+add_dependencies(skia gn)
+
 if(UNIX AND NOT APPLE)
     include(GNUInstallDirs)
     install(
@@ -185,8 +198,6 @@ if(UNIX AND NOT APPLE)
         ${CMAKE_INSTALL_DOCDIR}-friction-${PROJECT_VERSION}
     )
 endif()
-
-add_dependencies(skia gn)
 
 if(WIN32)
     add_custom_command(TARGET skia POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy ${SKIA_BUILD_DIR}/skia.dll.lib ${SKIA_BUILD_DIR}/skia.lib)
