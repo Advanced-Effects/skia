@@ -1,6 +1,6 @@
 # Skia for Friction
 
-Skia fork for use with Friction.
+Fork of skia for use with Friction.
 
 Skia is a complete 2D graphic library for drawing Text, Geometries, and Images.
 
@@ -15,15 +15,12 @@ Note that Friction includes skia and will build it for you.
 * cmake
 * clang
 * expat
-* harfbuzz
 * freetype
 * fontconfig
 * libjpeg-turbo
 * libpng
 * libwebp
-* libicu
 * zlib
-
 
 ### Options
 
