@@ -136,6 +136,7 @@ set(SKIA_ARGS "${SKIA_ARGS} skia_use_system_expat=${SKIA_ENABLE_EXTERNAL}")
 set(SKIA_ARGS "${SKIA_ARGS} skia_use_system_libjpeg_turbo=${SKIA_ENABLE_EXTERNAL}")
 set(SKIA_ARGS "${SKIA_ARGS} skia_use_system_libpng=${SKIA_ENABLE_EXTERNAL}")
 set(SKIA_ARGS "${SKIA_ARGS} skia_use_system_libwebp=${SKIA_ENABLE_EXTERNAL}")
+set(SKIA_ARGS "${SKIA_ARGS} skia_use_libgifcodec=false")
 if(WIN32 OR NOT ${SKIA_USE_SYSTEM_LIBS})
     if(APPLE)
         set(SKIA_ARGS "${SKIA_ARGS} skia_use_system_zlib=true")
@@ -145,9 +146,6 @@ if(WIN32 OR NOT ${SKIA_USE_SYSTEM_LIBS})
 endif()
 if(UNIX AND NOT APPLE)
     set(SKIA_ARGS "${SKIA_ARGS} skia_use_system_freetype2=${SKIA_ENABLE_EXTERNAL}")
-endif()
-if(APPLE)
-    set(SKIA_ARGS "${SKIA_ARGS} skia_use_libgifcodec=false")
 endif()
 
 ExternalProject_Add(
@@ -189,6 +187,13 @@ add_dependencies(skialib gn)
 
 if(NOT ${SKIA_STATIC})
     if(UNIX AND NOT APPLE)
+        set(CMAKE_INSTALL_DOCDIR_FILTER "${CMAKE_INSTALL_DOCDIR}")
+        string(REGEX REPLACE
+            "\\/${PROJECT_NAME}$"
+            "skia-friction"
+            CMAKE_INSTALL_DOCDIR_FILTER 
+            "${CMAKE_INSTALL_DOCDIR_FILTER}" 
+        )
         include(GNUInstallDirs)
         install(
             FILES
@@ -201,7 +206,7 @@ if(NOT ${SKIA_STATIC})
             ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
             ${CMAKE_CURRENT_SOURCE_DIR}/README.md
             DESTINATION
-            ${CMAKE_INSTALL_DOCDIR}-friction-${PROJECT_VERSION}
+            ${CMAKE_INSTALL_DOCDIR_FILTER}-${PROJECT_VERSION}
         )
     endif()
 endif()
