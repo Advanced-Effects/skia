@@ -304,6 +304,9 @@ template("gcc_like_toolchain") {
       outputs = [ "{{root_out_dir}}/$soname" ]
       output_prefix = "lib"
       default_output_extension = ".so"
+      if (is_mac) {
+        default_output_extension = ".dylib"
+      }
       description = "link {{output}}"
     }
 
