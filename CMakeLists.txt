@@ -187,26 +187,12 @@ add_dependencies(skialib gn)
 
 if(NOT ${SKIA_STATIC})
     if(UNIX AND NOT APPLE)
-        set(CMAKE_INSTALL_DOCDIR_FILTER "${CMAKE_INSTALL_DOCDIR}")
-        string(REGEX REPLACE
-            "\\/${PROJECT_NAME}$"
-            "skia-friction"
-            CMAKE_INSTALL_DOCDIR_FILTER 
-            "${CMAKE_INSTALL_DOCDIR_FILTER}" 
-        )
         include(GNUInstallDirs)
         install(
             FILES
             ${SKIA_BUILD_DIR}/libskia-friction.so
             DESTINATION
             ${CMAKE_INSTALL_LIBDIR}
-        )
-        install(
-            FILES
-            ${CMAKE_CURRENT_SOURCE_DIR}/LICENSE
-            ${CMAKE_CURRENT_SOURCE_DIR}/README.md
-            DESTINATION
-            ${CMAKE_INSTALL_DOCDIR_FILTER}-${PROJECT_VERSION}
         )
     endif()
 endif()
