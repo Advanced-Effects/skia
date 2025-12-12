@@ -168,6 +168,14 @@ else()
     set(GN_BIN_PATH ${SKIA_BUILD_DIR}/gn/gn)
 endif()
 
+if (WIN32)
+    set(SKIA_DLL_PATH "${SKIA_BUILD_DIR}/skia.lib")
+elif (LINUX)
+    set(SKIA_DLL_PATH "${SKIA_BUILD_DIR}/libskia-friction.so")
+else()
+    set(SKIA_DLL_PATH "${SKIA_BUILD_DIR}/libskia-friction.dylib")
+endif()
+
 ExternalProject_Add(
     skialib
     SOURCE_DIR ${SKIA_SRC}
@@ -181,6 +189,9 @@ ExternalProject_Add(
     USES_TERMINAL_UPDATE true
     USES_TERMINAL_CONFIGURE true
     USES_TERMINAL_BUILD true
+    # BUILD_BYPRODUCTS is to make sure the DLL/SO file
+    # is importable by other projects.
+    BUILD_BYPRODUCTS ${SKIA_DLL_PATH}
 )
 
 add_dependencies(skialib gn)
@@ -190,7 +201,7 @@ if(NOT ${SKIA_STATIC})
         include(GNUInstallDirs)
         install(
             FILES
-            ${SKIA_BUILD_DIR}/libskia-friction.so
+            ${SKIA_DLL_PATH}
             DESTINATION
             ${CMAKE_INSTALL_LIBDIR}
         )
